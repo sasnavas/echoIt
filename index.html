@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoIT – Carbon Footprint Manager</title>
+  <meta name="description" content="EcoIT Carbon Footprint Dashboard for SMEs. Track energy usage, monthly costs, and CO2 emissions from your IT infrastructure." />
+
+  <!-- Google Fonts: Manrope (headlines) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration directly in DOM -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-base':          '#eefcff',
+            'surface-low':      '#dcf9ff',
+            'surface-mid':      '#d6f3fa',
+            'surface-high':     '#d0edf4',
+            'surface-highest':  '#cae8ee',
+            'surface-card':     '#ffffff',
+            'primary':          '#203b40',
+            'primary-c':        '#375257',
+            'on-primary':       '#ffffff',
+            'secondary':        '#3d674f',
+            'secondary-c':      '#bceacd',
+            'on-secondary-c':   '#416b54',
+            'tertiary':         '#661f00',
+            'tertiary-c':       '#8d2d00',
+            'on-surface':       '#011f24',
+            'on-surface-var':   '#414849',
+            'outline':          '#727879',
+            'outline-var':      '#c1c8c9',
+          },
+          fontFamily: {
+            headline: ['Manrope', 'sans-serif'],
+            body:     ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'ambient': '0 12px 32px rgba(1, 31, 36, 0.06)',
+            'card':    '0 4px 16px rgba(1, 31, 36, 0.04)',
+          },
+          backgroundImage: {
+            'primary-grad': 'linear-gradient(135deg, #203b40 0%, #375257 100%)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- Extracted Custom Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Authentication Guard -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body class="bg-bg-base">
+
+  <!-- ══════════════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════════ -->
+  <header class="header-bar shadow-ambient" id="site-header">
+    <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-secondary-c flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#bceacd" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M9 9h.01M15 9h.01" stroke="#bceacd" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 2v3M2 12H5M19 12h3M12 19v3" stroke="#afccd1" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-headline font-800 text-white text-xl tracking-tight leading-none">EcoIT</h1>
+          <p class="text-xs text-outline-var font-body mt-0.5">Carbon Footprint Manager (Standalone)</p>
+        </div>
+      </div>
+
+      <!-- Right side nav -->
+      <div class="flex items-center gap-6">
+        <nav class="hidden md:flex items-center gap-5 text-sm font-body text-on-primary opacity-75">
+          <a href="index.html" class="hover:opacity-100 transition-opacity">Dashboard</a>
+          <a href="reports.html" class="hover:opacity-100 transition-opacity">Reports</a>
+          <a href="settings.html" class="hover:opacity-100 transition-opacity">Settings</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <span class="status-dot"></span>
+          <span class="text-xs text-outline-var font-body">Local App</span>
+        </div>
+        
+        <!-- Avatar with dropdown -->
+        <div class="relative">
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors" aria-label="User profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="12" cy="7" r="4" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <!-- Dropdown -->
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-surface-card rounded-md shadow-card py-2 z-50">
+            <div class="px-4 py-2 border-b border-outline-var/20">
+              <p class="text-xs font-semibold text-on-surface">admin</p>
+            </div>
+            <a href="#" onclick="localStorage.removeItem('isLoggedIn'); window.location.href='login.html';" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-low transition-colors">Log out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MAIN LAYOUT (sidebar + content)
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="max-w-screen-2xl mx-auto flex gap-0" style="min-height: calc(100vh - 65px);">
+
+    <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+    <aside class="sidebar-glass w-72 shrink-0 p-6 border-r border-outline-var/15"
+           id="sidebar" aria-label="Infrastructure Input Form">
+
+      <!-- Sidebar title -->
+      <div class="mb-6">
+        <p class="label-blueprint text-on-surface-var mb-1">Infrastructure Audit</p>
+        <h2 class="font-headline font-700 text-on-surface text-lg leading-tight">Configure Your Setup</h2>
+      </div>
+
+      <!-- ── Form ────────────────────────────────────────────── -->
+      <form id="infrastructure-form" novalidate>
+
+        <!-- Number of Servers -->
+        <div class="mb-7">
+          <label for="numberOfServers" class="label-blueprint block mb-3">Number of Servers</label>
+          <div class="relative">
+            <input
+              type="number"
+              id="numberOfServers"
+              name="numberOfServers"
+              class="form-input pr-8"
+              placeholder="e.g. 12"
+              min="0"
+              required
+              aria-required="true"
+            />
+            <span class="absolute right-2 bottom-2 text-on-surface-var opacity-40" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+          </div>
+          <p class="text-xs text-on-surface-var mt-1.5 opacity-70">500 Watts / Server</p>
+        </div>
+
+        <!-- Number of PCs -->
+        <div class="mb-7">
+          <label for="numberOfPCs" class="label-blueprint block mb-3">Number of PCs</label>
+          <div class="relative">
+            <input
+              type="number"
+              id="numberOfPCs"
+              name="numberOfPCs"
+              class="form-input pr-8"
+              placeholder="e.g. 50"
+              min="0"
+              required
+              aria-required="true"
+            />
+            <span class="absolute right-2 bottom-2 text-on-surface-var opacity-40" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="10" r="2" stroke="currentColor" stroke-width="1.5"/></svg>
+            </span>
+          </div>
+          <p class="text-xs text-on-surface-var mt-1.5 opacity-70">65 Watts / PC</p>
+        </div>
+
+        <!-- Daily Usage Hours -->
+        <div class="mb-8">
+          <label for="dailyUsageHours" class="label-blueprint block mb-3">Daily Usage Hours (Avg)</label>
+          <div class="relative">
+            <input
+              type="number"
+              id="dailyUsageHours"
+              name="dailyUsageHours"
+              class="form-input pr-8"
+              placeholder="e.g. 8"
+              min="0"
+              max="24"
+              required
+              aria-required="true"
+            />
+            <span class="absolute right-2 bottom-2 text-on-surface-var opacity-40" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+          </div>
+          <p class="text-xs text-on-surface-var mt-1.5 opacity-70">Hours turned on per workday</p>
+        </div>
+
+        <!-- Validation message -->
+        <p id="form-error" class="text-xs text-tertiary mb-4 hidden" role="alert" aria-live="polite"></p>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="submit-btn"
+          class="btn-primary w-full py-3 px-4 flex items-center justify-center gap-2"
+          aria-label="Calculate carbon impact"
+        >
+          <svg id="submit-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span id="submit-text">Calculate Impact</span>
+          <span id="submit-spinner" class="spinner hidden" aria-hidden="true"></span>
+        </button>
+        
+        <!-- Info note -->
+        <p class="text-xs text-on-surface-var mt-4 leading-relaxed opacity-60 text-center">
+          Calculated purely locally in your browser. No data leaves your machine.
+        </p>
+
+      </form>
+
+      <!-- ── Divider ───────────────────────────────────────── -->
+      <div class="my-6 h-px bg-outline-var/20"></div>
+
+      <!-- Quick info panel -->
+      <div class="bg-surface-high rounded-md p-4 text-xs text-on-surface-var leading-relaxed">
+        <p class="label-blueprint mb-2">Math Settings</p>
+        <ul class="space-y-1.5">
+          <li class="flex gap-2"><span class="text-secondary font-bold">•</span>22 Workdays / mo</li>
+          <li class="flex gap-2"><span class="text-secondary font-bold">•</span>€0.25 Cost / kWh</li>
+          <li class="flex gap-2"><span class="text-secondary font-bold">•</span>0.4kg CO₂ / kWh</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ──────────────────────────────────────────── -->
+    <main class="flex-1 p-8 bg-surface-low overflow-y-auto" id="main-content">
+
+      <!-- Page heading -->
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <p class="label-blueprint text-on-surface-var mb-1">Overview</p>
+          <h2 class="font-headline font-800 text-on-surface text-2xl tracking-tight">Carbon Footprint Dashboard</h2>
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+          <span class="eco-chip">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="#416b54"/><path d="M9 12l2 2 4-4" stroke="#bceacd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Eco Monitoring Active
+          </span>
+          <span class="text-xs text-on-surface-var opacity-60 font-body" id="last-updated">—</span>
+        </div>
+      </div>
+
+      <!-- ── METRIC CARDS ──────────────────────────────────────── -->
+      <section aria-label="Key Metrics" class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+
+        <!-- Energy card -->
+        <div class="metric-card energy p-6" id="card-energy">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <p class="label-blueprint text-on-surface-var">Energy (kWh)</p>
+              <p class="text-xs text-on-surface-var opacity-60 mt-0.5">Monthly Total</p>
+            </div>
+            <div class="w-10 h-10 rounded-md bg-surface-mid flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#203b40" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="display-num text-on-surface mb-2" id="metric-energy">0</p>
+          <div class="flex items-center gap-2">
+            <span class="eco-chip" id="badge-energy">Awaiting input</span>
+          </div>
+        </div>
+
+        <!-- Monthly Cost card -->
+        <div class="metric-card cost p-6" id="card-cost">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <p class="label-blueprint text-on-surface-var">Monthly Cost (€)</p>
+              <p class="text-xs text-on-surface-var opacity-60 mt-0.5">At €0.25/kWh</p>
+            </div>
+            <div class="w-10 h-10 rounded-md bg-secondary-c/30 flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" stroke="#3d674f" stroke-width="1.5"/>
+                <path d="M12 6v2m0 8v2M9.5 9.5c0-1.105.895-2 2-2h1a2 2 0 010 4h-1a2 2 0 000 4h1a2 2 0 002-2" stroke="#3d674f" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="display-num text-on-surface mb-2" id="metric-cost">0</p>
+          <div class="flex items-center gap-2">
+            <span class="eco-chip" id="badge-cost">Awaiting input</span>
+          </div>
+        </div>
+
+        <!-- CO2 Emissions card -->
+        <div class="metric-card co2 p-6" id="card-co2">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <p class="label-blueprint text-on-surface-var">CO₂ Emissions (Tonnes)</p>
+              <p class="text-xs text-on-surface-var opacity-60 mt-0.5">Based on intensity 0.4</p>
+            </div>
+            <div class="w-10 h-10 rounded-md bg-tertiary/10 flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z" stroke="#661f00" stroke-width="1.5"/>
+                <path d="M12 8v4l3 3" stroke="#661f00" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="display-num text-on-surface mb-2" id="metric-co2">0</p>
+          <div class="flex items-center gap-2">
+            <span class="eco-chip" id="badge-co2">Awaiting input</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── EMISSIONS TREND CHART ──────────────────────────────── -->
+      <section aria-label="Emissions Trends Chart" class="chart-wrapper p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <p class="label-blueprint text-on-surface-var mb-1">6-Month Overview</p>
+            <h3 class="font-headline font-700 text-on-surface text-base">Emissions Trend Over 6 Months</h3>
+          </div>
+          <div class="flex gap-3 text-xs font-body text-on-surface-var">
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-0.5 rounded-full" style="background:#203b40;display:inline-block;"></span> CO₂
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-0.5 rounded-full" style="background:#3d674f;display:inline-block;"></span> Energy
+            </span>
+          </div>
+        </div>
+        <div style="position:relative; height:260px;">
+          <canvas id="emissionsChart" aria-label="Line chart showing emissions trends"></canvas>
+        </div>
+      </section>
+
+      <!-- ── AI SMART RECOMMENDATIONS ─────────────────────────── -->
+      <section aria-labelledby="ai-heading" class="ai-panel p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <p class="label-blueprint mb-1" style="color:rgba(193,200,201,0.7)">Intelligent Analysis</p>
+            <h3 class="font-headline font-700 text-white text-base" id="ai-heading">AI Smart Recommendations</h3>
+          </div>
+          <div class="flex items-center gap-2 bg-white/8 rounded-md px-3 py-1.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#bceacd"/>
+            </svg>
+            <span class="text-xs font-body text-secondary-c">Rule-Based</span>
+          </div>
+        </div>
+
+        <ul id="recommendations-list" class="space-y-0" aria-label="AI Recommendations List">
+          <!-- Default placeholder items -->
+          <li class="ai-rec-item">
+            <div class="ai-rec-icon">💡</div>
+            <div>
+              <p class="text-sm font-body text-white font-medium">Submit your infrastructure data to receive personalised actionable recommendations.</p>
+              <p class="text-xs mt-1" style="color:rgba(193,200,201,0.6)">Your analysis will appear here after calculation.</p>
+            </div>
+          </li>
+          <li class="ai-rec-item">
+            <div class="ai-rec-icon">🌱</div>
+            <div>
+              <p class="text-sm font-body text-white font-medium">Tip: A single standard server draws around 500 Watts while active.</p>
+              <p class="text-xs mt-1" style="color:rgba(193,200,201,0.6)">Server virtualization is key to footprint reduction.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── TOAST ─────────────────────────────────────────────────── -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- External Extracted Script via validation.js -->
+  <script src="script/script.js"></script>
+
+  <!-- Dropdown Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const avatarBtn = document.getElementById('user-avatar');
+      const dropdownMenu = document.getElementById('user-dropdown');
+      
+      if (avatarBtn && dropdownMenu) {
+        avatarBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!avatarBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

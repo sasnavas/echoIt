@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official EcoIT Report</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-base':          '#eefcff',
+            'primary':          '#203b40',
+            'primary-c':        '#375257',
+            'secondary':        '#3d674f',
+            'secondary-c':      '#bceacd',
+            'tertiary':         '#661f00',
+            'on-surface':       '#011f24',
+            'on-surface-var':   '#414849',
+            'outline-var':      '#c1c8c9',
+          },
+          fontFamily: {
+            headline: ['Manrope', 'sans-serif'],
+            body:     ['Inter', 'sans-serif'],
+            formal:   ['Merriweather', 'serif'],
+          }
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #f3f4f6; /* Gray background for screen */
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* A4 Page styling for screen */
+    .page {
+      background: white;
+      width: 21cm;
+      min-height: 29.7cm;
+      display: block;
+      margin: 2rem auto;
+      padding: 2.5cm;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* Print settings */
+    @media print {
+      body, .page {
+        margin: 0;
+        padding: 1.5cm;
+        box-shadow: none;
+        width: 100%;
+        min-height: 100%;
+        background: white;
+      }
+      .no-print {
+        display: none !important;
+      }
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    }
+
+    .seal-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.03;
+      width: 60%;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls for screen only -->
+  <div class="no-print fixed top-4 right-4 flex gap-4">
+    <button onclick="window.close()" class="px-4 py-2 bg-white text-on-surface border border-outline-var rounded shadow hover:bg-gray-50 transition-colors font-medium text-sm">Close</button>
+    <button onclick="window.print()" class="px-4 py-2 bg-primary text-white rounded shadow hover:bg-primary-c transition-colors font-medium text-sm">Print / Save as PDF</button>
+  </div>
+
+  <div class="page text-on-surface">
+    <!-- Watermark / Seal -->
+    <svg class="seal-bg" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="90" stroke="#3d674f" stroke-width="4" stroke-dasharray="10 5" />
+      <path d="M100 30L120 70L160 80L130 110L140 150L100 130L60 150L70 110L40 80L80 70Z" fill="#3d674f" />
+    </svg>
+
+    <!-- Header -->
+    <header class="border-b-4 border-primary pb-6 mb-8 flex justify-between items-end relative z-10">
+      <div>
+        <p class="font-formal text-sm text-on-surface-var tracking-widest uppercase mb-1">Official Declaration</p>
+        <h1 class="font-headline font-800 text-3xl text-primary uppercase">Carbon Footprint Report</h1>
+        <p class="text-sm mt-2 text-on-surface-var">Platform ID: <span class="font-mono bg-gray-100 px-1">ECO-INT-8834</span></p>
+      </div>
+      <div class="text-right">
+        <div class="w-16 h-16 ml-auto mb-2 rounded-full bg-secondary-c flex items-center justify-center border-2 border-secondary">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" stroke="#3d674f" stroke-width="1.5"/>
+            <path d="M9 12l2 2 4-4" stroke="#3d674f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="text-xs font-bold text-secondary uppercase tracking-wider">Registered</p>
+        <p class="text-sm font-headline text-primary font-bold">Eco-Friendly</p>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="relative z-10">
+      <div class="mb-8">
+        <h2 class="font-formal text-xl text-primary font-bold mb-4">1. Entity Information</h2>
+        <table class="w-full text-sm border-collapse">
+          <tr class="border-b border-gray-200">
+            <td class="py-2 font-semibold w-1/3">Company Name</td>
+            <td class="py-2">EcoIT Enterprises</td>
+          </tr>
+          <tr class="border-b border-gray-200">
+            <td class="py-2 font-semibold">Report Date</td>
+            <td class="py-2" id="report-date">-</td>
+          </tr>
+          <tr class="border-b border-gray-200">
+            <td class="py-2 font-semibold">Evaluation Period</td>
+            <td class="py-2">Monthly Calculation (22 Workdays)</td>
+          </tr>
+          <tr class="border-b border-gray-200">
+            <td class="py-2 font-semibold">Standard Applied</td>
+            <td class="py-2">Local IT Infrastructure Protocol v1.4</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="font-formal text-xl text-primary font-bold mb-4">2. Infrastructure Audit</h2>
+        <div class="bg-surface-low rounded p-6 border border-surface-high">
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <p class="text-xs font-bold text-on-surface-var uppercase tracking-wider">Servers Tracked</p>
+              <p class="font-headline text-3xl font-bold text-primary mt-1" id="val-servers">0</p>
+              <p class="text-xs text-on-surface-var mt-1">@ 500 Watts / unit</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-on-surface-var uppercase tracking-wider">Workstations (PCs)</p>
+              <p class="font-headline text-3xl font-bold text-primary mt-1" id="val-pcs">0</p>
+              <p class="text-xs text-on-surface-var mt-1">@ 65 Watts / unit</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-on-surface-var mt-3 italic">Calculations assume an average daily usage of <span id="val-hours" class="font-bold">0</span> hours per active workday.</p>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-formal text-xl text-primary font-bold mb-4">3. Impact Metrics</h2>
+        
+        <table class="w-full border-collapse border border-primary">
+          <thead>
+            <tr class="bg-primary text-white text-left">
+              <th class="py-3 px-4 font-medium uppercase text-sm tracking-wide">Metric Category</th>
+              <th class="py-3 px-4 font-medium uppercase text-sm tracking-wide text-right">Calculated Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-primary/20 bg-gray-50">
+              <td class="py-4 px-4">
+                <p class="font-bold text-on-surface">Total Energy Consumption</p>
+                <p class="text-xs text-on-surface-var mt-1">Total kWh consumed by tracked infrastructure</p>
+              </td>
+              <td class="py-4 px-4 text-right font-headline font-bold text-xl text-primary">
+                <span id="val-energy">0</span> <span class="text-sm font-normal">kWh</span>
+              </td>
+            </tr>
+            <tr class="border-b border-primary/20">
+              <td class="py-4 px-4">
+                <p class="font-bold text-on-surface">Estimated Monthly Cost</p>
+                <p class="text-xs text-on-surface-var mt-1">Calculated at standard rate of €0.25/kWh</p>
+              </td>
+              <td class="py-4 px-4 text-right font-headline font-bold text-xl text-primary">
+                <span class="text-sm font-normal">€</span><span id="val-cost">0.00</span>
+              </td>
+            </tr>
+            <tr class="bg-secondary-c/20 border-b border-primary/20">
+              <td class="py-4 px-4">
+                <p class="font-bold text-on-surface">Carbon Footprint (CO₂)</p>
+                <p class="text-xs text-on-surface-var mt-1">Based on grid intensity factor of 0.4kg/kWh</p>
+              </td>
+              <td class="py-4 px-4 text-right font-headline font-bold text-2xl text-tertiary">
+                <span id="val-co2">0.000</span> <span class="text-sm font-normal">Tonnes</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mb-8 p-5 border-l-4 border-secondary bg-gray-50">
+        <h3 class="font-bold text-on-surface mb-2">Certification Statement</h3>
+        <p class="text-sm text-on-surface-var leading-relaxed">
+          This document certifies that the aforementioned entity actively tracks and manages its IT infrastructure carbon footprint via the EcoIT platform. The data presented is mathematically derived from localized infrastructural inputs and standard emission factors. This report serves as a valid internal audit document for environmental compliance and sustainability tracking.
+        </p>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="absolute bottom-[2.5cm] left-[2.5cm] right-[2.5cm] border-t border-gray-300 pt-4 flex justify-between items-center z-10 text-xs text-on-surface-var">
+      <div>
+        <p class="font-bold">EcoIT Technologies Auth.</p>
+        <p>Document Gen-ID: <script>document.write(Math.random().toString(36).substring(2, 10).toUpperCase())</script></p>
+      </div>
+      <div class="text-right">
+        <p>Official Verification Hash</p>
+        <p class="font-mono">0x1F2A...9B4C</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dataStr = localStorage.getItem('latestCalculation');
+      if (dataStr) {
+        const data = JSON.parse(dataStr);
+        
+        // Populate fields
+        document.getElementById('report-date').textContent = new Date(data.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        
+        document.getElementById('val-servers').textContent = data.servers;
+        document.getElementById('val-pcs').textContent = data.pcs;
+        document.getElementById('val-hours').textContent = data.hours;
+        
+        document.getElementById('val-energy').textContent = data.monthlyKwh.toLocaleString(undefined, {maximumFractionDigits: 0});
+        document.getElementById('val-cost').textContent = data.monthlyCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('val-co2').textContent = data.monthlyCo2Tonnes.toFixed(3);
+      } else {
+        alert("Warning: No calculation data found. Displaying empty template.");
+      }
+
+      // Auto trigger print dialogue after a short delay for rendering
+      setTimeout(() => {
+        window.print();
+      }, 800);
+    });
+  </script>
+</body>
+</html>

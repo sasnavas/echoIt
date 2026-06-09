@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings – EcoIT</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-base':          '#eefcff',
+            'surface-low':      '#dcf9ff',
+            'surface-mid':      '#d6f3fa',
+            'surface-high':     '#d0edf4',
+            'surface-card':     '#ffffff',
+            'primary':          '#203b40',
+            'primary-c':        '#375257',
+            'on-primary':       '#ffffff',
+            'secondary':        '#3d674f',
+            'secondary-c':      '#bceacd',
+            'on-surface':       '#011f24',
+            'on-surface-var':   '#414849',
+            'outline':          '#727879',
+            'outline-var':      '#c1c8c9',
+          },
+          fontFamily: {
+            headline: ['Manrope', 'sans-serif'],
+            body:     ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'ambient': '0 12px 32px rgba(1, 31, 36, 0.06)',
+            'card':    '0 4px 16px rgba(1, 31, 36, 0.04)',
+          }
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Authentication Guard -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body class="bg-bg-base">
+
+  <!-- HEADER -->
+  <header class="header-bar shadow-ambient" id="site-header">
+    <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-secondary-c flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="rgba(255,255,255,0.15)"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#bceacd" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M9 9h.01M15 9h.01" stroke="#bceacd" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 2v3M2 12H5M19 12h3M12 19v3" stroke="#afccd1" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-headline font-800 text-white text-xl tracking-tight leading-none">EcoIT</h1>
+          <p class="text-xs text-outline-var font-body mt-0.5">Carbon Footprint Manager</p>
+        </div>
+      </div>
+
+      <!-- Right side nav -->
+      <div class="flex items-center gap-6">
+        <nav class="hidden md:flex items-center gap-5 text-sm font-body text-on-primary opacity-75">
+          <a href="index.html" class="hover:opacity-100 transition-opacity">Dashboard</a>
+          <a href="reports.html" class="hover:opacity-100 transition-opacity">Reports</a>
+          <a href="settings.html" class="hover:opacity-100 transition-opacity opacity-100 font-bold border-b border-secondary-c">Settings</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <span class="status-dot"></span>
+          <span class="text-xs text-outline-var font-body">Local App</span>
+        </div>
+        
+        <!-- Avatar with dropdown -->
+        <div class="relative">
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors" aria-label="User profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="12" cy="7" r="4" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <!-- Dropdown -->
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-surface-card rounded-md shadow-card py-2 z-50">
+            <div class="px-4 py-2 border-b border-outline-var/20">
+              <p class="text-xs font-semibold text-on-surface">admin</p>
+            </div>
+            <a href="#" onclick="localStorage.removeItem('isLoggedIn'); window.location.href='login.html';" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-low transition-colors">Log out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="max-w-screen-2xl mx-auto flex gap-0" style="min-height: calc(100vh - 65px);">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar-glass w-72 shrink-0 p-6 border-r border-outline-var/15" aria-label="Settings Sidebar">
+      <div class="mb-6">
+        <p class="label-blueprint text-on-surface-var mb-1">Configuration</p>
+        <h2 class="font-headline font-700 text-on-surface text-lg leading-tight">App Settings</h2>
+      </div>
+
+      <nav class="space-y-2">
+        <a href="#" onclick="switchTab('profile', event)" id="nav-profile" class="block p-3 bg-white shadow-card rounded-md border-l-4 border-primary font-medium text-sm text-on-surface">Profile Settings</a>
+        <a href="#" onclick="switchTab('notifications', event)" id="nav-notifications" class="block p-3 rounded-md hover:bg-white/50 transition-colors text-sm text-on-surface-var">Notifications</a>
+        <a href="#" onclick="switchTab('security', event)" id="nav-security" class="block p-3 rounded-md hover:bg-white/50 transition-colors text-sm text-on-surface-var">Security</a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-8 bg-surface-low overflow-y-auto">
+
+      <!-- Profile Section -->
+      <section id="section-profile" class="settings-section block">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="label-blueprint text-on-surface-var mb-1">Profile</p>
+            <h2 class="font-headline font-800 text-on-surface text-2xl tracking-tight">Personal Information</h2>
+          </div>
+        </div>
+
+        <div class="bg-surface-card rounded-md shadow-card p-8 max-w-2xl">
+          <form onsubmit="event.preventDefault(); alert('Profile settings saved!');">
+            <div class="mb-8">
+              <div class="flex items-center gap-6 mb-8 pb-6 border-b border-outline-var/20">
+                <div class="w-20 h-20 rounded-full bg-secondary-c flex items-center justify-center text-primary font-headline font-bold text-2xl">
+                  AD
+                </div>
+                <div>
+                  <button type="button" class="btn-primary py-2 px-4 rounded text-sm mb-2">Change Avatar</button>
+                  <p class="text-xs text-on-surface-var opacity-70">JPG, GIF or PNG. Max size of 800K</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div class="md:col-span-2">
+                  <label for="fullName" class="label-blueprint block mb-3">Full Name</label>
+                  <div class="relative">
+                    <input type="text" id="fullName" class="form-input" value="Admin User" required />
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                  <label for="email" class="label-blueprint block mb-3">Email Address</label>
+                  <div class="relative">
+                    <input type="email" id="email" class="form-input" value="admin@ecoit.com" required />
+                  </div>
+                </div>
+
+                <!-- Company -->
+                <div>
+                  <label for="company" class="label-blueprint block mb-3">Company</label>
+                  <div class="relative">
+                    <input type="text" id="company" class="form-input" value="EcoIT Enterprises" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-4">
+              <button type="submit" class="btn-primary py-2 px-6 rounded text-sm">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Notifications Section -->
+      <section id="section-notifications" class="settings-section hidden">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="label-blueprint text-on-surface-var mb-1">Notifications</p>
+            <h2 class="font-headline font-800 text-on-surface text-2xl tracking-tight">Alert Preferences</h2>
+          </div>
+        </div>
+
+        <div class="bg-surface-card rounded-md shadow-card p-8 max-w-2xl">
+          <form onsubmit="event.preventDefault(); alert('Notification settings saved!');">
+            <div class="mb-8 space-y-6">
+              
+              <!-- Option 1 -->
+              <div class="flex items-center justify-between border-b border-outline-var/20 pb-4">
+                <div>
+                  <h3 class="font-headline font-600 text-sm text-on-surface mb-1">Email Alerts</h3>
+                  <p class="text-xs text-on-surface-var opacity-70">Receive general updates and system maintenance notices.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked>
+                  <div class="w-11 h-6 bg-outline-var rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+              </div>
+
+              <!-- Option 2 -->
+              <div class="flex items-center justify-between border-b border-outline-var/20 pb-4">
+                <div>
+                  <h3 class="font-headline font-600 text-sm text-on-surface mb-1">Monthly Report Summary</h3>
+                  <p class="text-xs text-on-surface-var opacity-70">Automatically email a PDF summary of your carbon footprint on the 1st of every month.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer" checked>
+                  <div class="w-11 h-6 bg-outline-var rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+              </div>
+
+              <!-- Option 3 -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-headline font-600 text-sm text-on-surface mb-1">Unusual Energy Spike Alerts</h3>
+                  <p class="text-xs text-on-surface-var opacity-70">Get notified if energy usage increases by more than 15% unexpectedly.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value="" class="sr-only peer">
+                  <div class="w-11 h-6 bg-outline-var rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+              </div>
+
+            </div>
+
+            <div class="flex justify-end gap-4">
+              <button type="submit" class="btn-primary py-2 px-6 rounded text-sm">Save Preferences</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Security Section -->
+      <section id="section-security" class="settings-section hidden">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="label-blueprint text-on-surface-var mb-1">Security</p>
+            <h2 class="font-headline font-800 text-on-surface text-2xl tracking-tight">Access & Authentication</h2>
+          </div>
+        </div>
+
+        <div class="bg-surface-card rounded-md shadow-card p-8 max-w-2xl mb-6">
+          <form onsubmit="event.preventDefault(); alert('Password successfully updated!');">
+            <h3 class="font-headline font-700 text-lg mb-4 text-on-surface border-b border-outline-var/30 pb-2">Change Password</h3>
+            <div class="grid grid-cols-1 gap-6 mb-8">
+              <!-- Current Password -->
+              <div>
+                <label for="currentPassword" class="label-blueprint block mb-3">Current Password</label>
+                <div class="relative">
+                  <input type="password" id="currentPassword" class="form-input" placeholder="••••••••" required />
+                </div>
+              </div>
+
+              <!-- New Password -->
+              <div>
+                <label for="newPassword" class="label-blueprint block mb-3">New Password</label>
+                <div class="relative">
+                  <input type="password" id="newPassword" class="form-input" placeholder="••••••••" required />
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div>
+                <label for="confirmPassword" class="label-blueprint block mb-3">Confirm New Password</label>
+                <div class="relative">
+                  <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-4">
+              <button type="submit" class="btn-primary py-2 px-6 rounded text-sm">Update Password</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 2FA -->
+        <div class="bg-surface-card rounded-md shadow-card p-8 max-w-2xl">
+          <h3 class="font-headline font-700 text-lg mb-4 text-on-surface border-b border-outline-var/30 pb-2">Two-Factor Authentication</h3>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-on-surface mb-1">Status: <span class="text-secondary font-bold">Enabled</span></p>
+              <p class="text-xs text-on-surface-var opacity-70">Add an extra layer of security to your account.</p>
+            </div>
+            <button type="button" class="px-4 py-2 rounded text-sm font-medium text-tertiary border border-tertiary hover:bg-tertiary/10 transition-colors" onclick="alert('2FA Disable Flow Initiated')">Disable</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Avatar Dropdown Toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const avatarBtn = document.getElementById('user-avatar');
+      const dropdownMenu = document.getElementById('user-dropdown');
+      
+      if (avatarBtn && dropdownMenu) {
+        avatarBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!avatarBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+          }
+        });
+      }
+    });
+
+    // Sidebar Tab Switching
+    function switchTab(tabId, event) {
+      if (event) event.preventDefault();
+
+      // Reset nav styles
+      const navLinks = ['nav-profile', 'nav-notifications', 'nav-security'];
+      navLinks.forEach(id => {
+        const el = document.getElementById(id);
+        el.className = 'block p-3 rounded-md hover:bg-white/50 transition-colors text-sm text-on-surface-var';
+      });
+
+      // Set active nav style
+      const activeNav = document.getElementById('nav-' + tabId);
+      activeNav.className = 'block p-3 bg-white shadow-card rounded-md border-l-4 border-primary font-medium text-sm text-on-surface';
+
+      // Hide all sections
+      const sections = ['section-profile', 'section-notifications', 'section-security'];
+      sections.forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+        document.getElementById(id).classList.remove('block');
+      });
+
+      // Show target section
+      document.getElementById('section-' + tabId).classList.remove('hidden');
+      document.getElementById('section-' + tabId).classList.add('block');
+    }
+  </script>
+</body>
+</html>

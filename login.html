@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – EcoIT</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-base':          '#eefcff',
+            'surface-card':     '#ffffff',
+            'primary':          '#203b40',
+            'primary-c':        '#375257',
+            'on-primary':       '#ffffff',
+            'secondary':        '#3d674f',
+            'secondary-c':      '#bceacd',
+            'tertiary':         '#661f00',
+            'on-surface':       '#011f24',
+            'on-surface-var':   '#414849',
+            'outline-var':      '#c1c8c9',
+          },
+          fontFamily: {
+            headline: ['Manrope', 'sans-serif'],
+            body:     ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'ambient': '0 12px 32px rgba(1, 31, 36, 0.06)',
+            'card':    '0 4px 16px rgba(1, 31, 36, 0.04)',
+          }
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-bg-base flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-md bg-surface-card rounded-lg shadow-ambient p-8 relative overflow-hidden">
+    <!-- Decorative element -->
+    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-primary-c"></div>
+    
+    <div class="flex items-center gap-3 mb-8 justify-center">
+      <div class="w-12 h-12 rounded-full bg-secondary-c flex items-center justify-center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="rgba(255,255,255,0.15)"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#bceacd" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M9 9h.01M15 9h.01" stroke="#bceacd" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 2v3M2 12H5M19 12h3M12 19v3" stroke="#afccd1" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-headline font-800 text-primary text-2xl tracking-tight leading-none">EcoIT</h1>
+        <p class="text-xs text-on-surface-var font-body mt-0.5">Manager Portal</p>
+      </div>
+    </div>
+
+    <form id="login-form" class="space-y-6" onsubmit="handleLogin(event)">
+      <div>
+        <label for="username" class="label-blueprint block mb-2">Username</label>
+        <input type="text" id="username" class="form-input" placeholder="Enter username (e.g., admin)" required />
+      </div>
+      <div>
+        <label for="password" class="label-blueprint block mb-2">Password</label>
+        <input type="password" id="password" class="form-input" placeholder="Enter password (e.g., password)" required />
+      </div>
+      
+      <p id="login-error" class="text-xs text-tertiary hidden">Invalid credentials.</p>
+
+      <button type="submit" class="btn-primary w-full py-3 px-4 flex items-center justify-center">
+        Sign In
+      </button>
+    </form>
+    
+    <div class="mt-6 text-center">
+      <p class="text-xs text-on-surface-var opacity-70">Generic user: <strong>admin</strong> / <strong>password</strong></p>
+    </div>
+  </div>
+
+  <script>
+    // If already logged in, redirect to dashboard
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      window.location.href = 'index.html';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const errorEl = document.getElementById('login-error');
+
+      if ((user === 'admin' && pass === 'password') || (user !== '' && pass !== '')) {
+        // Set local storage flag
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'index.html';
+      } else {
+        errorEl.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
